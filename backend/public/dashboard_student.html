@@ -60,7 +60,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-secondary transition">
+					<a href="#" id="logout-btn" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-secondary transition">
 						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" /></svg>
 						Logout
 					</a>
@@ -70,8 +70,21 @@
 	</aside>
 	<!-- Main Content -->
 	<main class="flex-1 p-10">
-		<h1 class="text-3xl font-bold text-primary mb-6">Welcome, Student!</h1>
+		<h1 class="text-3xl font-bold text-primary mb-6">Welcome, <span id="user-name">Student</span>!</h1>
 		<p class="text-lg text-gray-700">This is your dashboard. Here you can manage appointments, view your profile, and more.</p>
+		
+		<div class="mt-8 bg-white p-6 rounded-lg shadow">
+			<h2 class="text-xl font-semibold text-primary mb-4">Your Profile</h2>
+			<div class="space-y-2">
+				<p><strong>Email:</strong> <span id="user-email">-</span></p>
+				<p><strong>ID Number:</strong> <span id="user-id">-</span></p>
+				<p><strong>Year:</strong> <span id="user-year">-</span></p>
+				<p><strong>Program:</strong> <span id="user-program">-</span></p>
+				<p><strong>Gender:</strong> <span id="user-gender">-</span></p>
+			</div>
+		</div>
 	</main>
+	
+	<script src="dashboardscript.js"></script>
 </body>
 </html>
