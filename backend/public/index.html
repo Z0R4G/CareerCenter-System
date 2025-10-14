@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSU-IIT Career Center </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.12.0/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#841327',
+                        secondary: '#a31e23',
+                        catdark: '#2b2b2b',
+                        catlight: '#fad129',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+    <div class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-6xl w-full space-y-8 flex flex-col md:flex-row gap-8">
+            <!-- mao ni ang text sa homepage -->
+            <div class="flex-1 flex flex-col justify-center">
+                <div class="text-center md:text-left">
+                    <h1 class="text-5xl font-bold text-primary mb-4">MSU-IIT Career Center</h1>
+                    <h2 class="text-2xl text-gray-600 mb-6">Connect with the Counselors!</h2>
+                    <p class="text-lg text-gray-500 mb-8">Set an appointment for interviews, practices, and trainings with the best counselors to talk about your future career!</p>
+                </div>
+            </div>
+            
+            <!-- login and signup -->
+            <div class="flex-1" x-data="{ isLogin: true }">
+                <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                    
+                    <div class="flex border-b border-gray-200 mb-6">
+                        <button 
+                            @click="isLogin = true" 
+                            :class="isLogin ? 'border-b-2 border-primary text-primary' : 'text-gray-500'"
+                            class="flex-1 py-2 text-center font-medium">
+                            Login
+                        </button>
+                        <button 
+                            @click="isLogin = false" 
+                            :class="!isLogin ? 'border-b-2 border-primary text-primary' : 'text-gray-500'"
+                            class="flex-1 py-2 text-center font-medium">
+                            Sign Up
+                        </button>
+                    </div>
+                    
+                    <!-- login -->
+                    <form x-show="isLogin" class="space-y-6" id="login-form">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">MSU-IIT Email</label>
+                            <div class="mt-1">
+                                <input id="email" name="email" type="text" autocomplete="username" required 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <div class="mt-1">
+                                <input id="password" name="password" type="password" autocomplete="current-password" required 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" 
+                                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                Sign in
+                            </button>
+                        </div>
+                    </form>
+                    <script>
+                    // Login form submission
+                    document.getElementById('login-form').addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const email = document.getElementById('email').value.trim();
+                        const password = document.getElementById('password').value;
+                        
+                        try {
+                            const response = await fetch('/app/login', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ email, password })
+                            });
+                            
+                            const data = await response.json();
+                            
+                            if (response.ok) {
+                                // Store user data in localStorage
+                                localStorage.setItem('user', JSON.stringify(data.user));
+                                // Redirect to dashboard
+                                window.location.href = 'dashboard_student.html';
+                            } else {
+                                alert(data.error || 'Login failed. Please try again.');
+                            }
+                        } catch (error) {
+                            console.error('Login error:', error);
+                            alert('An error occurred during login. Please try again.');
+                        }
+                    });
+                    </script>
+                    
+                    <!-- himog account -->
+                    <div x-show="!isLogin" class="space-y-6">
+                        <p class="text-center text-sm text-gray-600">
+                            Create your MICC account to connect with the counselors.
+                        </p>
+                        <a href="register.html" 
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+                            Create New Account
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-white py-6 w-full">
+        <div class="max-w-6xl mx-auto px-4 text-center text-gray-500">
+            <p>© 2025 MICC - Exclusive system for MSU-IIT's counselors and students.</p>
+        </div>
+    </footer>
+</body>
+</html>
