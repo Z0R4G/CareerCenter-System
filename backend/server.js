@@ -3,14 +3,15 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const db = require('./dbConnection');
 
+//middlewares
 const app = express();
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json()); 
 
-// Serve static files (HTML, JS, CSS) from the project root directory
+// Serve static files
 const public= path.resolve(__dirname, './public');
 app.use(express.static(public));
 
-// Routes mapping to your HTML files
+// Routes map
 app.get(['/', '/index', '/index.html'], (_req, res) => {
   res.sendFile(path.join(public, 'index.html'));
 });
@@ -24,8 +25,6 @@ app.get(['/dashboard-s', '/dashboard_s.html'], (_req, res) => {
 });
 
 // app Routes
-
-
 // Register endpoint
 app.post('/app/register', async (req, res) => {
     try{
@@ -56,32 +55,32 @@ app.post('/app/register', async (req, res) => {
 
 // Login endpoint
 app.post('/app/login', async(req, res) => {
-    const { email, password } = req.body;
-    const [rows] = await db.execute(
-        'SELECT * FROM students WHERE email = ? AND password = ? LIMIT 1', 
-        [email, password]);
-            
-    if (rows.length === 0) {
-        return res.status(401).json({ error: 'Invalid email or password' });
-    }else{
-    delete rows[0].password; 
-    return res.status(200).json({ message: 'Login successful',email });
+    try {
+        const { email, password } = req.body;
+        console.log('Login attempt for:', email); // Debug log
+        
+        const [rows] = await db.execute(
+            'SELECT * FROM students WHERE email = ? AND password = ? LIMIT 1', 
+            [email, password]);
+        
+        console.log('Query result:', rows); // Debug log
+                
+        if (rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        } else {
+            const user = rows[0];
+            delete user.password; 
+            console.log('Sending user data:', user); // Debug log
+            return res.status(200).json({ 
+                message: 'Login successful',
+                user: user
+            });
+        }
+    } catch (err) {
+        console.error('Login Error:', err);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-
 });
-
-// Get all users (for testing purposes)
-app.get('/app/users', (_req, res) => {
-  res.json(users.map(u => ({
-    id: u.id,
-    email: u.email,
-    id_number: u.id_number,
-    year: u.year,
-    program: u.program,
-    gender: u.gender
-  })));
-});
-
 
 
 // 404 handler for unmatched routes

@@ -92,12 +92,20 @@
                             });
                             
                             const data = await response.json();
+                            console.log('Login response:', data); // Debug log
                             
                             if (response.ok) {
-                                // Store user data in localStorage
-                                localStorage.setItem('user', JSON.stringify(data.user));
-                                // Redirect to dashboard
-                                window.location.href = 'dashboard_student.html';
+                                // Check if user data exists
+                                if (data.user) {
+                                    console.log('Storing user data:', data.user); // Debug log
+                                    // Store user data in localStorage
+                                    localStorage.setItem('user', JSON.stringify(data.user));
+                                    // Redirect to dashboard
+                                    window.location.href = 'dashboard_student.html';
+                                } else {
+                                    console.error('No user data in response');
+                                    alert('Login successful but no user data received. Please try again.');
+                                }
                             } else {
                                 alert(data.error || 'Login failed. Please try again.');
                             }
