@@ -79,6 +79,7 @@ app.post('/app/login', async(req, res) => {
     } catch (err) {
         console.error('Login Error:', err);
         return res.status(500).json({ error: 'Internal server error' });
+        // If there's an error parsing user data, redirect to login
     }
 });
 
