@@ -30,7 +30,7 @@
 		<nav class="flex-1">
 			<ul class="space-y-4">
 				<li>
-					<a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-secondary transition">
+					<a href="#" id="nav-dashboard" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-secondary transition">
 						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" /></svg>
 						Dashboard
 					</a>
@@ -42,7 +42,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="#" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-secondary transition">
+					<a href="#" id="nav-profile" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-secondary transition">
 						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.797.657 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
 						Profile
 					</a>
@@ -73,7 +73,25 @@
 		<h1 class="text-3xl font-bold text-primary mb-6">Welcome, <span id="user-name">Student</span>!</h1>
 		<p class="text-lg text-gray-700">This is your dashboard. Here you can manage appointments, view your profile, and more.</p>
 		
-		<div class="mt-8 bg-white p-6 rounded-lg shadow">
+		<!-- Panels: Jobs feed (default) and Profile (toggle) -->
+		<div id="panel-jobs" class="mt-8 bg-white p-6 rounded-lg shadow">
+			<h2 class="text-xl font-semibold text-primary mb-4">Job Listings</h2>
+			<div id="jobs-list" class="space-y-4">
+				<!-- Example job cards; replace with dynamic content later -->
+				<div class="p-4 border rounded">
+					<h3 class="font-semibold">Software Developer Intern</h3>
+					<p class="text-sm text-gray-600">Company A — Remote</p>
+					<p class="mt-2 text-gray-700">Build and maintain web applications. Requirements: JS, Node.js, MySQL.</p>
+				</div>
+				<div class="p-4 border rounded">
+					<h3 class="font-semibold">Junior QA Engineer</h3>
+					<p class="text-sm text-gray-600">Company B — Onsite</p>
+					<p class="mt-2 text-gray-700">Assist in testing web applications and writing test cases.</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="panel-profile" class="mt-8 bg-white p-6 rounded-lg shadow hidden">
 			<h2 class="text-xl font-semibold text-primary mb-4">Your Profile</h2>
 			<div class="space-y-2">
 				<p><strong>Email:</strong> <span id="user-email">-</span></p>
