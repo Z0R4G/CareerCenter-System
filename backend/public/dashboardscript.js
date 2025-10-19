@@ -51,3 +51,37 @@ document.getElementById('logout-btn').addEventListener('click', function(e) {
         window.location.href = 'index.html';
     }
 });
+
+// Panel toggle: show jobs by default, show profile when profile nav clicked
+function showPanel(panelId) {
+    const jobs = document.getElementById('panel-jobs');
+    const profile = document.getElementById('panel-profile');
+    if (!jobs || !profile) return;
+
+    if (panelId === 'jobs') {
+        jobs.classList.remove('hidden');
+        profile.classList.add('hidden');
+    } else if (panelId === 'profile') {
+        profile.classList.remove('hidden');
+        jobs.classList.add('hidden');
+    }
+}
+
+// Wire nav buttons
+const navProfile = document.getElementById('nav-profile');
+const navDashboard = document.getElementById('nav-dashboard');
+if (navProfile) {
+    navProfile.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPanel('profile');
+    });
+}
+if (navDashboard) {
+    navDashboard.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPanel('jobs');
+    });
+}
+
+// Ensure default is jobs feed
+showPanel('jobs');
