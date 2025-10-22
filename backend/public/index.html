@@ -74,9 +74,30 @@
                                 Sign in
                             </button>
                         </div>
+
+                            <div class="text-center">
+                         <button type="button" id="demo-btn" class="mt-2 text-sm text-primary underline">Use demo account</button>
+                         </div>
+
                     </form>
                     <script>
+
                     // Login form submission
+                document.getElementById('demo-btn').addEventListener('click', function() {
+    const demoUser = {
+        id: '999',
+        name: 'Demo Student',
+        email: 'demo@msuiit.edu.ph',
+        role: 'student'
+    };
+    // store demo user in localStorage (client-side only)
+    localStorage.setItem('user', JSON.stringify(demoUser));
+    // prefill fields (optional) and redirect to dashboard
+    document.getElementById('email').value = demoUser.email;
+    document.getElementById('password').value = 'demo1234';
+    window.location.href = 'dashboard_student.html';
+});
+
                     document.getElementById('login-form').addEventListener('submit', async function(e) {
                         e.preventDefault();
                         const email = document.getElementById('email').value.trim();
