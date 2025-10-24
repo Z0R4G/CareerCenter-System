@@ -10,26 +10,13 @@ const app = express();
 app.use(express.json()); 
 
 // Serve static files
-const public= path.resolve(__dirname, './public');
+const public= path.resolve(__dirname, '../public');
 app.use(express.static(public));
 
 // app Routes
 app.use('/app',signupLoginRoutes);
 app.use('/app',editProfileRoutes);
 
-
-// Routes map
-app.get(['/', '/index'], (_req, res) => {
-  res.sendFile(path.join(public, 'index.html'));
-});
-
-app.get(['/register'], (_req, res) => {
-  res.sendFile(path.join(public, 'register.html'));
-});
-
-app.get(['/dashboard-s', '/dashboard_s.html'], (_req, res) => {
-  res.sendFile(path.join(public, 'dashboard_s.html'));
-});
 
 
 
