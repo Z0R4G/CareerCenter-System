@@ -25,6 +25,8 @@ if (!userData || userData === 'undefined' || userData === 'null') {
         
         // Update profile information
             document.getElementById('user-email').textContent = user.email || 'N/A';
+            document.getElementById('user-first_name').textContent = user.name || 'N/A';
+            document.getElementById('user-last_name').textContent = user.last_name || 'N/A';
             document.getElementById('user-id').textContent = user.ID_number || user.id_number || 'N/A';
             document.getElementById('user-year').textContent = user.Year || 'N/A';
             document.getElementById('user-program').textContent = user.program || 'N/A';
