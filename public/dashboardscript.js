@@ -58,20 +58,30 @@ document.getElementById('logout-btn').addEventListener('click', function(e) {
 function showPanel(panelId) {
     const jobs = document.getElementById('panel-jobs');
     const profile = document.getElementById('panel-profile');
+    const appointments = document.getElementById('panel-appointments');
     if (!jobs || !profile) return;
 
     if (panelId === 'jobs') {
         jobs.classList.remove('hidden');
         profile.classList.add('hidden');
+        appointments.classList.add('hidden');
     } else if (panelId === 'profile') {
         profile.classList.remove('hidden');
         jobs.classList.add('hidden');
+        appointments.classList.add('hidden');
+    }else if (panelId === 'appointments') {
+        if (!appointments) return;
+        appointments.classList.remove('hidden');
+        jobs.classList.add('hidden');
+        profile.classList.add('hidden');
     }
 }
 
 // Wire nav buttons
 const navProfile = document.getElementById('nav-profile');
 const navDashboard = document.getElementById('nav-dashboard');
+const navAppointments = document.getElementById('nav-appointments');
+
 if (navProfile) {
     navProfile.addEventListener('click', (e) => {
         e.preventDefault();
@@ -84,6 +94,11 @@ if (navDashboard) {
         showPanel('jobs');
     });
 }
-
+if (navAppointments) {
+    navAppointments.addEventListener('click', (e) => {
+        e.preventDefault();
+        showPanel('appointments');
+    });
+}
 // Ensure default is jobs feed
 showPanel('jobs');

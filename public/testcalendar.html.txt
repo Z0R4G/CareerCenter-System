@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Calendar Scheduler (API Backend)</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        :root {
+            --primary-color: #1a73e8; /* Google Blue */
+            --light-blue: #e8f0fe;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light grey background */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        /* Custom styles for the Docs aesthetic */
+        .docs-card {
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+            border-radius: 8px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .date-cell:hover {
+            background-color: var(--light-blue);
+            border-radius: 50%;
+        }
+        .today {
+            border: 2px solid var(--primary-color);
+            background-color: #f3f6fc;
+        }
+        .date-number {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        .date-number.today-num {
+            color: white;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+        .appointment {
+            font-size: 0.7rem;
+            line-height: 1;
+            padding: 2px 4px;
+            margin-top: 2px;
+            border-radius: 4px;
+            background-color: #fce8e6; /* Light red/coral */
+            color: #d93025; /* Dark red */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: default;
+        }
+        .appointment-cell {
+            min-height: 80px;
+            position: relative;
+        }
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="docs-card p-6 md:p-8 relative">
+        <div id="loading-indicator" class="loading-overlay hidden">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-blue-600">Loading data...</span>
+        </div>
+
+        <!-- Calendar Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 id="month-year-display" class="text-3xl font-normal text-gray-700"></h1>
+            <div class="flex space-x-2">
+                <button onclick="changeMonth(-1)" class="p-2 rounded-full hover:bg-gray-100 transition duration-150">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button onclick="changeMonth(1)" class="p-2 rounded-full hover:bg-gray-100 transition duration-150">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button onclick="goToToday()" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition duration-150 ml-4">Today</button>
+            </div>
+        </div>
+
+        <!-- Weekday Headers -->
+        <div class="grid grid-cols-7 text-center font-medium text-gray-500 mb-2 border-b pb-2">
+            <div>SUN</div>
+            <div>MON</div>
+            <div>TUE</div>
+            <div>WED</div>
+            <div>THU</div>
+            <div>FRI</div>
+            <div>SAT</div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-1">
+            <!-- Calendar cells will be injected here -->
+        </div>
+        
+        <!-- User ID Display -->
+        <p class="mt-6 text-xs text-gray-500 text-center border-t pt-4">
+            User ID (for API requests): <span id="user-id-display" class="font-mono text-gray-700">Loading...</span>
+        </p>
+    </div>
+
+    <!-- Appointment Modal (Hidden by default) -->
+    <div id="appointment-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center p-4 z-50 transition-opacity duration-300" onclick="closeModal(event)">
+        <div class="docs-card w-full max-w-lg p-6" onclick="event.stopPropagation()">
+            <h2 class="text-xl font-normal text-gray-800 mb-4">Schedule Appointment</h2>
+            <p class="text-sm text-gray-600 mb-4">Date Selected: <strong id="modal-date-display"></strong></p>
+
+            <form id="appointment-form">
+                <input type="hidden" id="appointment-date-input">
+
+                <div class="mb-4">
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" id="title" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 transition duration-150">
+                </div>
+
+                <div class="mb-6">
+                    <label for="time" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <input type="time" id="time" required value="10:00"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 transition duration-150">
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-600 rounded-md hover:bg-gray-100 transition duration-150">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- API Logic -->
+    <script type="module">
+        // --- API Configuration ---
+        const BASE_URL = 'https://api.your-calendar-server.com'; // Replace with your actual base URL
+        const APPOINTMENTS_ENDPOINT = '/appointments'; // GET (list), POST (create)
+        const DELETE_ENDPOINT = (id) => `/appointments/${id}`; // DELETE (delete)
+
+        // --- Application State ---
+        let currentMonth = new Date();
+        let appointments = {}; // Store appointments grouped by 'YYYY-MM-DD'
+        let userId = crypto.randomUUID(); // Unique ID for this session/user
+        let isFetching = false;
+
+        // --- Utility Functions ---
+
+        /** Shows/hides the loading indicator */
+        function toggleLoading(show) {
+            document.getElementById('loading-indicator').classList.toggle('hidden', !show);
+        }
+
+        /** Implements exponential backoff for fetching */
+        async function fetchWithBackoff(url, options = {}, maxRetries = 5) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            // 404 is often acceptable for APIs if no data exists
+                            console.warn(`API Not Found: ${url}`);
+                            return { ok: false, status: response.status, json: async () => ({}) };
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response;
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        throw error;
+                    }
+                    const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                    console.log(`Request failed. Retrying in ${Math.round(delay / 1000)}s...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+
+        /** Formats a Date object into YYYY-MM-DD string */
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        /** Clears the calendar grid and updates the header */
+        function clearCalendar() {
+            document.getElementById('calendar-grid').innerHTML = '';
+            document.getElementById('month-year-display').textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        }
+
+        /** Converts API data array into an object keyed by date */
+        function processAppointments(dataArray) {
+            const newAppointments = {};
+            // Simulate the data structure the API would return: [{ id, date, title, time }]
+            dataArray.forEach(data => {
+                const dateKey = data.date;
+                if (!newAppointments[dateKey]) {
+                    newAppointments[dateKey] = [];
+                }
+                newAppointments[dateKey].push({
+                    id: data.id,
+                    title: data.title,
+                    time: data.time
+                });
+            });
+            // Sort appointments by time
+            for (const date in newAppointments) {
+                newAppointments[date].sort((a, b) => (a.time > b.time) ? 1 : -1);
+            }
+            appointments = newAppointments;
+            renderCalendar(); // Re-render the calendar to show appointments
+        }
+
+        /** Renders the calendar grid for the currentMonth state */
+        window.renderCalendar = function() {
+            clearCalendar();
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            const today = new Date();
+            const calendarGrid = document.getElementById('calendar-grid');
+
+            // Find the day of the week for the 1st of the month (0=Sun, 6=Sat)
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            // Get the total number of days in the month
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // 1. Fill leading empty cells
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'p-1 appointment-cell border-b border-r';
+                calendarGrid.appendChild(cell);
+            }
+
+            // 2. Fill date cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dateKey = formatDate(date);
+
+                const isToday = today.getDate() === day && today.getMonth() === month && today.getFullYear() === year;
+
+                const cell = document.createElement('div');
+                cell.className = `p-1 appointment-cell border-b border-r ${date.getDay() === 0 ? 'border-l' : ''} ${isToday ? 'today' : 'hover:bg-gray-50 transition'}`;
+                cell.setAttribute('data-date', dateKey);
+
+                const dateNumDiv = document.createElement('div');
+                dateNumDiv.className = 'date-number';
+                dateNumDiv.onclick = () => openModal(dateKey);
+
+                const dateSpan = document.createElement('span');
+                dateSpan.textContent = day;
+                dateSpan.className = isToday ? 'today-num' : '';
+                dateNumDiv.appendChild(dateSpan);
+                cell.appendChild(dateNumDiv);
+
+                // 3. Render appointments for this date
+                const dayAppointments = appointments[dateKey] || [];
+                dayAppointments.forEach(appt => {
+                    const apptDiv = document.createElement('div');
+                    apptDiv.className = 'appointment flex justify-between items-center group';
+                    apptDiv.innerHTML = `
+                        <span title="${appt.title} at ${appt.time}">${appt.time} - ${appt.title}</span>
+                        <button class="text-xs ml-2 text-gray-500 opacity-0 group-hover:opacity-100 hover:text-red-500" title="Delete Appointment" onclick="deleteAppointment('${appt.id}')">
+                           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    `;
+                    cell.appendChild(apptDiv);
+                });
+
+                calendarGrid.appendChild(cell);
+            }
+
+            // 4. Fill trailing empty cells
+            const totalCells = firstDayOfMonth + daysInMonth;
+            const remainingCells = (7 - (totalCells % 7)) % 7;
+            for (let i = 0; i < remainingCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'p-1 appointment-cell border-b border-r';
+                calendarGrid.appendChild(cell);
+            }
+        }
+
+        /** Change the calendar month by offset (e.g., -1 for prev, 1 for next) */
+        window.changeMonth = function(offset) {
+            currentMonth.setMonth(currentMonth.getMonth() + offset);
+            renderCalendar();
+        }
+
+        /** Reset calendar view to the current month/day and triggers a manual refresh */
+        window.goToToday = function() {
+            currentMonth = new Date();
+            renderCalendar();
+            // Manually trigger a load when moving to today
+            loadAppointments();
+        }
+
+        /** Shows the appointment modal */
+        window.openModal = function(dateKey) {
+            const dateObj = new Date(dateKey + 'T00:00:00'); // Ensure time zone doesn't shift the date
+            const readableDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
+
+            document.getElementById('modal-date-display').textContent = readableDate;
+            document.getElementById('appointment-date-input').value = dateKey;
+            
+            const modal = document.getElementById('appointment-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        /** Closes the appointment modal */
+        window.closeModal = function(event) {
+            if (event && event.target.id === 'appointment-modal') {
+                document.getElementById('appointment-modal').classList.add('hidden');
+                document.getElementById('appointment-modal').classList.remove('flex');
+            } else if (!event) {
+                 document.getElementById('appointment-modal').classList.add('hidden');
+                 document.getElementById('appointment-modal').classList.remove('flex');
+            }
+        }
+
+        /** Sets up the application, removing continuous polling */
+        function appSetup() {
+            document.getElementById('user-id-display').textContent = userId;
+            
+            // Polling (setInterval) has been removed to stop constant loading attempts.
+            // Data loading is now triggered manually on successful data changes or on page load.
+
+            document.getElementById('appointment-form').addEventListener('submit', scheduleAppointment);
+        }
+
+        /** Fetches appointments from the API endpoint */
+        async function loadAppointments() {
+            if (isFetching) return;
+            isFetching = true;
+            toggleLoading(true);
+
+            try {
+                const url = `${BASE_URL}${APPOINTMENTS_ENDPOINT}`;
+                const response = await fetchWithBackoff(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-ID': userId // Pass user context to the backend
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const appointmentsData = Array.isArray(data) ? data : mockAppointmentData; 
+                    processAppointments(appointmentsData);
+                    console.log(`API Load successful. Loaded ${appointmentsData.length} appointments.`);
+                } else {
+                     // Fallback to mock data if API call fails
+                     processAppointments(mockAppointmentData);
+                     console.error(`Error loading appointments: HTTP ${response.status}. Using mock data.`);
+                }
+            } catch (error) {
+                console.error('API load failure:', error);
+                 // Fallback to mock data if API call fails
+                processAppointments(mockAppointmentData);
+            } finally {
+                isFetching = false;
+                toggleLoading(false);
+            }
+        }
+
+        /** Handles form submission to save a new appointment via API */
+        async function scheduleAppointment(e) {
+            e.preventDefault();
+            toggleLoading(true);
+
+            const date = document.getElementById('appointment-date-input').value;
+            const title = document.getElementById('title').value.trim();
+            const time = document.getElementById('time').value;
+
+            if (!date || !title || !time) {
+                console.error("Missing required form data.");
+                toggleLoading(false);
+                return;
+            }
+
+            const appointmentData = {
+                date: date,
+                title: title,
+                time: time,
+                userId: userId,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const url = `${BASE_URL}${APPOINTMENTS_ENDPOINT}`;
+                const response = await fetchWithBackoff(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-ID': userId
+                    },
+                    body: JSON.stringify(appointmentData)
+                });
+
+                if (response.ok) {
+                    console.log(`Appointment scheduled for ${date} at ${time}. API call successful.`);
+                    // Force a data refresh from the API after successful post
+                    await loadAppointments();
+                } else {
+                    console.error('Error scheduling appointment:', await response.text());
+                    // Fallback: Manually add to mock data if API is down
+                    appointmentData.id = crypto.randomUUID();
+                    mockAppointmentData.push(appointmentData);
+                    loadAppointments(); 
+                }
+
+                // Reset and close modal
+                document.getElementById('appointment-form').reset();
+                closeModal();
+            } catch (error) {
+                console.error('API scheduling failure:', error);
+                // Fallback: Manually add to mock data and re-render if API is down
+                appointmentData.id = crypto.randomUUID();
+                mockAppointmentData.push(appointmentData);
+                loadAppointments();
+                closeModal();
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        /** Deletes an appointment via API */
+        window.deleteAppointment = async function(docId) {
+            event.stopPropagation();
+            
+            console.log(`Attempting to delete appointment ID: ${docId}`);
+            toggleLoading(true);
+
+            try {
+                const url = `${BASE_URL}${DELETE_ENDPOINT(docId)}`;
+                const response = await fetchWithBackoff(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-User-ID': userId
+                    }
+                });
+
+                if (response.ok) {
+                    console.log(`Appointment ${docId} deleted successfully via API.`);
+                    // Force a data refresh from the API after successful delete
+                    await loadAppointments(); 
+                } else {
+                    console.error('Error deleting appointment:', await response.text());
+                    // Fallback: Manually remove from mock data if API is down
+                    const index = mockAppointmentData.findIndex(appt => appt.id === docId);
+                    if (index > -1) {
+                        mockAppointmentData.splice(index, 1);
+                    }
+                    loadAppointments();
+                }
+            } catch (error) {
+                console.error('API deletion failure:', error);
+                // Fallback: Manually remove from mock data and re-render if API is down
+                const index = mockAppointmentData.findIndex(appt => appt.id === docId);
+                if (index > -1) {
+                    mockAppointmentData.splice(index, 1);
+                }
+                loadAppointments();
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        // --- MOCK DATA (Fallback if API is unreachable) ---
+        const today = new Date();
+        const mockAppointmentData = [
+            { id: 'mock1', date: formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5)), title: 'Client Meeting', time: '14:30' },
+            { id: 'mock2', date: formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 12)), title: 'Team Sync', time: '09:00' },
+            { id: 'mock3', date: formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 12)), title: 'Gym Time', time: '19:00' },
+            { id: 'mock4', date: formatDate(today), title: 'Presentation Prep', time: '10:00' },
+        ];
+
+
+        // --- Initialization ---
+        window.onload = function() {
+            appSetup();
+            // 1. Immediately render mock data so the calendar is visible and interactive
+            processAppointments(mockAppointmentData); 
+            // 2. Attempt to load real data once on start
+            loadAppointments(); 
+        }
+    </script>
+</body>
+</html>
