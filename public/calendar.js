@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // A map to quickly look up appointments by date (YYYY-MM-DD)
     let appointments = {};
     // Unique ID used for the Local Storage key to separate data
-    const userId = crypto.randomUUID(); 
+    const userId = crypto.randomUUID();
     const APPOINTMENTS_STORAGE_KEY = `calendar_appointments_${userId}`;
-    
+
     // The central, mutable array that holds all appointment objects
-    let allAppointmentsData = []; 
+    let allAppointmentsData = [];
 
     // --- Local Storage Persistence Functions ---
 
@@ -39,9 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
             allAppointmentsData = generateInitialMockData();
         }
         // Ensure data is saved after loading/resetting it
-        saveAppointmentsToLS(); 
+        saveAppointmentsToLS();
     }
-    
+
     // --- API Endpoint Placeholders (for future use) ---
     /*
     // If you want to switch back to an API, you would:
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 3. Replace the logic in loadData(), scheduleAppointment(), and deleteAppointment()
     //    with your API calls (GET, POST, DELETE) instead of Local Storage calls.
     */
-    
+
     // --- Utility Functions ---
 
     /** Shows/hides the loading indicator */
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 time: data.time
             });
         });
-        
+
         // Sort appointments by time
         for (const date in newAppointments) {
             newAppointments[date].sort((a, b) => (a.time > b.time) ? 1 : -1);
@@ -192,12 +192,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /** Shows the appointment modal (made globally accessible) */
     window.openModal = function (dateKey) {
-        const dateObj = new Date(dateKey + 'T00:00:00'); 
+        const dateObj = new Date(dateKey + 'T00:00:00');
         const readableDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
 
         const modalDateDisplay = document.getElementById('modal-date-display');
         const appointmentDateInput = document.getElementById('appointment-date-input');
-        
+
         if (modalDateDisplay) modalDateDisplay.textContent = readableDate;
         if (appointmentDateInput) appointmentDateInput.value = dateKey;
 
@@ -211,8 +211,8 @@ document.addEventListener('DOMContentLoaded', function () {
     /** Closes the appointment modal (made globally accessible) */
     window.closeModal = function (event) {
         // Allows closing by clicking the backdrop
-        if (event && event.target.id !== 'appointment-modal') return; 
-        
+        if (event && event.target.id !== 'appointment-modal') return;
+
         const modal = document.getElementById('appointment-modal');
         if (modal) {
             modal.classList.add('hidden');
@@ -237,11 +237,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             // 1. Load the data into the central state array
-            loadAppointmentsFromLS(); 
+            loadAppointmentsFromLS();
 
             // 2. Process the data to update the 'appointments' map and re-render the calendar
             processAppointments();
-            
+
             console.log(`Data Load successful from Local Storage. Loaded ${allAppointmentsData.length} appointments.`);
 
         } catch (error) {
@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
             date: date,
             title: title,
             time: time,
-            id: crypto.randomUUID(), 
+            id: crypto.randomUUID(),
             userId: userId,
             createdAt: new Date().toISOString()
         };
@@ -283,10 +283,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // if (response.ok) { await loadData(); } else { // Handle API error }
             */
             // ---------------------------
-            
+
             // Local Storage: Add to central state array
-            allAppointmentsData.push(appointmentData); 
-            
+            allAppointmentsData.push(appointmentData);
+
             // Local Storage: Save and reload
             saveAppointmentsToLS();
             loadData();
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /** Deletes an appointment from Local Storage (made globally accessible) */
     window.deleteAppointment = async function (docId) {
         // event.stopPropagation() should be handled by the button's inline onclick if needed.
-        
+
         console.log(`Attempting to delete appointment ID: ${docId}`);
         toggleLoading(true);
 
@@ -320,13 +320,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // if (response.ok) { await loadData(); } else { // Handle API error }
             */
             // ---------------------------
-            
+
             // Local Storage: Remove from central state array
             const index = allAppointmentsData.findIndex(appt => appt.id === docId);
             if (index > -1) {
                 allAppointmentsData.splice(index, 1);
             }
-            
+
             // Local Storage: Save and reload
             saveAppointmentsToLS();
             loadData();
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
             toggleLoading(false);
         }
     }
-    
+
     // --- INITIAL MOCK DATA (Only used as a seed if Local Storage is empty) ---
     function generateInitialMockData() {
         const today = new Date();
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // --- Initialization ---
-    
+
     // The previous window.onload was replaced by DOMContentLoaded. 
     // This is the core function call that starts the app after the DOM is ready.
     appSetup();
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // If your environment handles this automatically, you can ignore this listener.
     const panelElement = document.getElementById('appointments-panel');
     if (panelElement) {
-        panelElement.addEventListener('click', function() {
+        panelElement.addEventListener('click', function () {
             console.log('Appointments panel active, re-rendering calendar.');
             loadData(); // Ensure latest data and render
         });

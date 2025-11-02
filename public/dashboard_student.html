@@ -108,6 +108,15 @@
 		<div id="panel-jobs" class="mt-8 bg-white p-6 rounded-lg shadow">
 			<h2 class="text-xl font-semibold text-primary mb-4">Job Listings</h2>
 			<div id="jobs-list" class="space-y-4">
+				<!-- Check if the element is a number -->
+				<script>
+					const numbers = document.querySelectorAll('.number');
+					numbers.forEach(number => {
+						if (!number.classList.contains('grid')) {
+							number.addEventListener('click', event => event.stopPropagation());
+						}
+					});
+				</script>
 				<!-- Example job cards; replace with dynamic content later -->
 				<div class="p-4 border rounded">
 					<h3 class="font-semibold">Software Developer Intern</h3>
