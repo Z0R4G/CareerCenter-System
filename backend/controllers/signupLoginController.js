@@ -55,8 +55,8 @@ const RegisterUser = async (req, res) => {
     
             // Insert new user into the database
             await db.execute(
-                'INSERT INTO students (email, first_name, last_name, password, ID_number, year, program, gender) VALUES (?, ?, ?, ?, ?, ?, ?,?)',
-                [email,first_name,last_name,hashedPassword,id_number,year,program,gender] ) 
+                'call addStudent(?, ?, ?, ?, ?, ?, ?,?)',
+                [last_name,first_name,email,hashedPassword,id_number,year,program,gender] ) 
             return res.status(201).json({ message: 'Registration successful' });      
         }catch(err){
             console.error('Registration Error:', err);

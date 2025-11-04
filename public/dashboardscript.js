@@ -20,12 +20,12 @@ if (!userData || userData === 'undefined' || userData === 'null') {
             window.location.href = 'index.html';
         } else {
             // Update user name in welcome message
-            const userName = user.email ? user.email.split('@')[0] : 'Student';
+            const userName = user.first_name || 'Student';
             document.getElementById('user-name').textContent = userName;
         
         // Update profile information
             document.getElementById('user-email').textContent = user.email || 'N/A';
-            document.getElementById('user-first_name').textContent = user.name || 'N/A';
+            document.getElementById('user-first_name').textContent = user.first_name || 'N/A';
             document.getElementById('user-last_name').textContent = user.last_name || 'N/A';
             document.getElementById('user-id').textContent = user.ID_number || user.id_number || 'N/A';
             document.getElementById('user-year').textContent = user.Year || 'N/A';
