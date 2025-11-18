@@ -258,9 +258,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const date = document.getElementById('appointment-date-input').value;
         const title = document.getElementById('title').value.trim();
-        const time = document.getElementById('time').value;
+        const start_time = document.getElementById('start-time').value;
+        const end_time = document.getElementById('end-time').value;
 
-        if (!date || !title || !time) {
+        if (!date || !title || !start_time || !end_time) {
             console.error("Missing required form data.");
             toggleLoading(false);
             return;
@@ -269,7 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const appointmentData = {
             date: date,
             title: title,
-            time: time,
+            start_time: start_time,
+            end_time: end_time,
             id: crypto.randomUUID(),
             userId: userId,
             createdAt: new Date().toISOString()
@@ -291,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function () {
             saveAppointmentsToLS();
             loadData();
 
-            console.log(`Appointment scheduled for ${date} at ${time}. Saved to Local Storage.`);
+            console.log(`Appointment scheduled for ${date}. Saved to Local Storage.`);
 
             // Reset and close modal
             const form = document.getElementById('appointment-form');

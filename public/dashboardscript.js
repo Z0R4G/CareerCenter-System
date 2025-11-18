@@ -12,7 +12,7 @@ if (!userData || userData === 'undefined' || userData === 'null') {
     try {
         const user = JSON.parse(userData);
         console.log('Parsed user object:', user); // Debug log
-        
+
         // Check if user object is valid
         if (!user || typeof user !== 'object') {
             console.error('Invalid user object');
@@ -22,8 +22,8 @@ if (!userData || userData === 'undefined' || userData === 'null') {
             // Update user name in welcome message
             const userName = user.first_name || 'Student';
             document.getElementById('user-name').textContent = userName;
-        
-        // Update profile information
+
+            // Update profile information
             document.getElementById('user-email').textContent = user.email || 'N/A';
             document.getElementById('user-first_name').textContent = user.first_name || 'N/A';
             document.getElementById('user-last_name').textContent = user.last_name || 'N/A';
@@ -41,14 +41,14 @@ if (!userData || userData === 'undefined' || userData === 'null') {
 }
 
 // Logout functionality
-document.getElementById('logout-btn').addEventListener('click', function(e) {
+document.getElementById('logout-btn').addEventListener('click', function (e) {
     e.preventDefault();
-    
+
     // Confirm logout
     if (confirm('Are you sure you want to logout?')) {
         // Clear user data from localStorage
         localStorage.removeItem('user');
-        
+
         // Redirect to login page
         window.location.href = 'index.html';
     }
@@ -69,7 +69,7 @@ function showPanel(panelId) {
         profile.classList.remove('hidden');
         jobs.classList.add('hidden');
         appointments.classList.add('hidden');
-    }else if (panelId === 'appointments') {
+    } else if (panelId === 'appointments') {
         if (!appointments) return;
         appointments.classList.remove('hidden');
         jobs.classList.add('hidden');
@@ -100,5 +100,29 @@ if (navAppointments) {
         showPanel('appointments');
     });
 }
+
+// Populate counselors list and wire up appointment modal
+const counselorsList = document.getElementById('counselors-list');
+const counselors = [
+    { name: 'Counselor A', id: 'counselor-a' },
+    { name: 'Counselor B', id: 'counselor-b' },
+    // Add more counselors here
+];
+counselors.forEach(counselor => {
+    const listItem = document.createElement('LI');
+    listItem.className = 'cursor-pointer';
+    listItem.onclick = function () {
+        const modal = document.getElementById('appointment-modal');
+        modal.classList.remove('hidden');
+        const modalDateDisplay = document.getElementById('modal-date-display');
+        modalDateDisplay.textContent = counselor.name;
+        const appointmentDateInput = document.getElementById('appointment-date-input');
+        appointmentDateInput.value = counselor.id;
+    };
+    const listText = document.createTextNode(counselor.name);
+    listItem.appendChild(listText);
+    counselorsList.appendChild(listItem);
+});
+
 // Ensure default is jobs feed
 showPanel('jobs');
