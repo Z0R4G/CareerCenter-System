@@ -1,11 +1,11 @@
 const express = require('express');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-const db = require('./dbConnection');
+const db = require('./configs/dbConnection');
 const signupLoginRoutes = require('./routes/signupLogin');
 const editProfileRoutes = require('./routes/editProfile');
 const FeedRoutes = require('./routes/FeedRoutes');
-
+const ResumeRoutes = require('./routes/ResumeChecker');
 //middlewares
 const app = express();
 app.use(express.json()); 
@@ -19,6 +19,7 @@ app.use(express.static(public));
 app.use('/app',signupLoginRoutes);
 app.use('/app',editProfileRoutes);
 app.use('/app',FeedRoutes);
+app.use('/app',ResumeRoutes);
 
 
 

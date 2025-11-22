@@ -1,4 +1,4 @@
-const db = require('../dbConnection');
+const db = require('../configs/dbConnection');
 
 const bcrypt = require('bcrypt');
 const LoginUser = async (req, res) => {

@@ -1,6 +1,6 @@
 // controllers/uploadController.js
 const imagekit = require("../configs/imagekit");
-const db = require('../dbConnection');
+const db = require('../configs/dbConnection');
 const uploadPost = async (req, res) => {
     try {
         // 1. Extract ALL text data from req.body
@@ -59,21 +59,17 @@ const uploadPost = async (req, res) => {
     }
 };
 
-// controllers/uploadController.js
-// ... (other imports and the createFeedPost function)
-// const db = require("../config/mysqlConnection"); // Your MySQL connection
 
 const getPosts = async (req, res) => {
     try {
         // 1. Define the SQL query
-        // CRITICAL: We select the post_photo_link column along with all other data!
         const getPostsql = `
             SELECT * 
             FROM feed
-            ORDER BY date_posted DESC
+            ORDER BY date_posted Asc
         `;
         
-        // 2. Execute the query using your MySQL driver
+        // 2. Execute the query 
         const [posts] = await db.execute(getPostsql);
 
         // 3. Send the entire array of post objects back to the frontend

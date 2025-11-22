@@ -21,12 +21,26 @@
             }
         }
     </script>
+    <style>
+        /* Custom styling for the select dropdown */
+        .custom-select {
+            /* Hide default browser arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            /* Add custom SVG arrow using base64 for portability */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 10.78l3.71-3.55a.75.75 0 111.02 1.08l-4.25 4a.75.75 0 01-1.02 0l-4.25-4a.75.75 0 01.02-1.06z' clip-rule='evenodd' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 font-sans flex flex-col min-h-screen">
     <div class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl w-full space-y-8 flex flex-col md:flex-row gap-8">
-            <!-- mao ni ang text sa homepage -->
             <div class="flex-1 flex flex-col justify-center">
                 <div class="text-center md:text-left">
                     <h1 class="text-5xl font-bold text-primary mb-4">CareerConnect+</h1>
@@ -36,10 +50,8 @@
                 </div>
             </div>
 
-            <!-- login and signup -->
             <div class="flex-1" x-data="{ isLogin: true }">
-                <div
-                    class="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+                <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
 
                     <div class="flex border-b border-gray-200 mb-6">
                         <button @click="isLogin = true"
@@ -54,8 +66,19 @@
                         </button>
                     </div>
 
-                    <!-- login -->
                     <form x-show="isLogin" class="space-y-6" id="login-form">
+                        
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700">Login Role</label>
+                            <div class="mt-1">
+                                <select id="role" name="role" required
+                                    class="custom-select w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                                    <option value="student">Student</option>
+                                    <option value="counselor">Counselor</option>
+                                </select>
+                            </div>
+                        </div>
+                        
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">MSU-IIT Email</label>
                             <div class="mt-1">
@@ -71,6 +94,7 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                         </div>
+                        
                         <div>
                             <button type="submit"
                                 class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
@@ -78,70 +102,111 @@
                             </button>
                         </div>
 
-                        <div class="text-center">
-                            <button type="button" id="demo-btn" class="mt-2 text-sm text-primary underline">Use demo
-                                account</button>
+                        <div class="text-center space-x-4">
+                            <button type="button" id="demo-student-btn" class="mt-2 text-sm text-primary underline">Use Student Demo</button>
+                            <button type="button" id="demo-counselor-btn" class="mt-2 text-sm text-secondary underline">Use Counselor Demo</button>
                         </div>
 
                     </form>
                     <script>
-
-                        // Login form submission
-                        document.getElementById('demo-btn').addEventListener('click', function () {
-                            const demoUser = {
-                                id: '999',
-                                name: 'Demo Student',
-                                email: 'demo@msuiit.edu.ph',
-                                role: 'student'
-                            };
-                            // store demo user in localStorage (client-side only)
-                            localStorage.setItem('user', JSON.stringify(demoUser));
-                            // prefill fields (optional) and redirect to dashboard
-                            document.getElementById('email').value = demoUser.email;
-                            document.getElementById('password').value = 'demo1234';
-                            window.location.href = 'dashboard_student.html';
-                        });
-
-                        document.getElementById('login-form').addEventListener('submit', async function (e) {
-                            e.preventDefault();
+                        // --- Helper function for actual login ---
+                        async function handleLogin(role) {
                             const email = document.getElementById('email').value.trim();
                             const password = document.getElementById('password').value;
 
+                            if (!email || !password) {
+                                alert('Please enter both email and password.');
+                                return;
+                            }
+
+                            // Added a specific error for unhandled demo accounts 
+                            if ((email === 'demo@msuiit.edu.ph' && role !== 'student') || (email === 'counselor@msuiit.edu.ph' && role !== 'counselor')) {
+                                alert(`Demo account '${email}' requires the role '${role}' to be selected.`);
+                                return;
+                            }
+
                             try {
+                                // Send the selected role along with credentials
                                 const response = await fetch('/app/login', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
                                     },
-                                    body: JSON.stringify({ email, password })
+                                    body: JSON.stringify({ email, password, role })
                                 });
 
                                 const data = await response.json();
-                                console.log('Login response:', data); // Debug log
+                                console.log('Login response:', data);
 
-                                if (response.ok) {
-                                    // Check if user data exists
-                                    if (data.user) {
-                                        console.log('Storing user data:', data.user); // Debug log
-                                        // Store user data in localStorage
-                                        localStorage.setItem('user', JSON.stringify(data.user));
-                                        // Redirect to dashboard
-                                        window.location.href = 'dashboard_student.html';
+                                if (response.ok && data.user) {
+                                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                                    // Redirect based on the role confirmed by the backend
+                                    if (data.user.role === 'counselor') {
+                                        window.location.href = 'dashboard_counselor.html';
                                     } else {
-                                        console.error('No user data in response');
-                                        alert('Login successful but no user data received. Please try again.');
+                                        window.location.href = 'dashboard_student.html';
                                     }
                                 } else {
-                                    alert(data.error || 'Login failed. Please try again.');
+                                    alert(data.error || 'Login failed. Please check your credentials and selected role.');
                                 }
                             } catch (error) {
                                 console.error('Login error:', error);
-                                alert('An error occurred during login. Please try again.');
+                                alert('An error occurred during login. The server might be unreachable.');
                             }
+                        }
+
+                        // --- Form Submission Listener (Captures role from dropdown) ---
+                        document.getElementById('login-form').addEventListener('submit', function (e) {
+                            e.preventDefault();
+                            // Get the selected role from the dropdown
+                            const selectedRole = document.getElementById('role').value;
+                            handleLogin(selectedRole);
+                        });
+
+
+                        // --- Demo Login Logic (Updated to use the dropdown logic) ---
+
+                        // STUDENT Demo Button
+                        document.getElementById('demo-student-btn').addEventListener('click', function () {
+                            const demoUser = {
+                                id: '999',
+                                first_name: 'Demo',
+                                last_name: 'Student',
+                                email: 'demo@msuiit.edu.ph',
+                                ID_number: '2022-1001',
+                                Year: '3rd Year',
+                                program: 'BS Computer Science',
+                                gender: 'Male',
+                                role: 'student'
+                            };
+                            localStorage.setItem('user', JSON.stringify(demoUser));
+                            document.getElementById('role').value = 'student'; // Set dropdown
+                            document.getElementById('email').value = demoUser.email;
+                            document.getElementById('password').value = 'demo1234';
+                            window.location.href = 'dashboard_student.html';
+                        });
+
+                        // COUNSELOR Demo Button
+                        document.getElementById('demo-counselor-btn').addEventListener('click', function () {
+                            const demoUser = {
+                                id: '501',
+                                first_name: 'Counselor',
+                                last_name: 'Adviser',
+                                email: 'counselor@msuiit.edu.ph',
+                                ID_number: 'C-001',
+                                department: 'Career Center',
+                                profile_link: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
+                                role: 'counselor'
+                            };
+                            localStorage.setItem('user', JSON.stringify(demoUser));
+                            document.getElementById('role').value = 'counselor'; // Set dropdown
+                            document.getElementById('email').value = demoUser.email;
+                            document.getElementById('password').value = 'demo1234';
+                            window.location.href = 'dashboard_counselor.html';
                         });
                     </script>
 
-                    <!-- himog account -->
                     <div x-show="!isLogin" class="space-y-6">
                         <p class="text-center text-sm text-gray-600">
                             Create your MICC account to connect with the counselors.

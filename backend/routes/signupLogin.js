@@ -1,5 +1,5 @@
 const express = require ('express');
-const db = require('../dbConnection');
+const db = require('../configs/dbConnection');
 const router = express.Router();
 const { LoginUser,
         RegisterUser
