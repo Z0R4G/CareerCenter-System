@@ -4,10 +4,12 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 const db = require('./dbConnection');
 const signupLoginRoutes = require('./routes/signupLogin');
 const editProfileRoutes = require('./routes/editProfile');
+const FeedRoutes = require('./routes/FeedRoutes');
 
 //middlewares
 const app = express();
 app.use(express.json()); 
+
 
 // Serve static files
 const public= path.resolve(__dirname, '../public');
@@ -16,7 +18,7 @@ app.use(express.static(public));
 // app Routes
 app.use('/app',signupLoginRoutes);
 app.use('/app',editProfileRoutes);
-
+app.use('/app',FeedRoutes);
 
 
 
