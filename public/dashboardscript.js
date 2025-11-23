@@ -55,7 +55,6 @@ if (logoutBtn) {
 
 
 // --- POST FEED LOGIC ---
-const FEED_API_URL = '/app/posts'; 
 
 /**
  * Renders a single post object into the feed container.
@@ -136,12 +135,11 @@ function renderPostCard(post, container) {
  * Main function to fetch all posts from the backend API.
  */
 async function fetchAllPosts() {
-    const feedContainer = document.getElementById('counselor-feed');
-    
+    const feedContainer = document.getElementById('counselor-feed'); 
     feedContainer.innerHTML = '<p class="text-center text-gray-500">Loading posts...</p>';
 
     try {
-        const response = await fetch(FEED_API_URL);
+        const response = await fetch('/app/posts');
 
         if (!response.ok) {
             throw new Error(`Failed to fetch posts: HTTP status ${response.status}`);
@@ -168,13 +166,106 @@ async function fetchAllPosts() {
 
     } catch (error) {
         console.error('API Fetch Error:', error);
-        feedContainer.innerHTML = `<p class="text-center text-red-500">Could not connect to the API. Check your console for details. (URL: ${FEED_API_URL})</p>`;
+        feedContainer.innerHTML = `<p class="text-center text-red-500">Could not connect to the API. Check your console for details. (URL: '/app/posts')</p>`;
     }
 }
 
+// ...existing code...
 
+async function uploadPost(e){
+    if (e && e.preventDefault) e.preventDefault();
+
+    const form = document.getElementById('post-form');
+    const contentEl = document.getElementById('post-content');
+    const fileInput = document.getElementById('post-image');
+    const submitBtn = document.getElementById('post-submit-btn');
+
+    if (!contentEl) return console.error('Post content element not found.');
+    const description = contentEl.value.trim();
+    if (!description) {
+        alert('Please enter post content.');
+        return;
+    }
+
+    // The backend expects a file (multer + controller uploads file.buffer).
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+        alert('Please select an image for the post (required by the server).');
+        return;
+    }
+
+    // Build title from first line / truncated content
+    const title = description.split('\n')[0].slice(0, 120) || 'Announcement';
+
+    // Get poster info from localStorage user
+    let posted_by = 'Counselor';
+    let profile_link = '';
+    try {
+        const userRaw = localStorage.getItem('user');
+        if (userRaw) {
+            const user = JSON.parse(userRaw);
+            posted_by = (user.first_name || '') + (user.last_name ? ' ' + user.last_name : '') || user.email || posted_by;
+            profile_link = user.profile_link || user.profile || user.profilePicture || '';
+        }
+    } catch (err) {
+        console.warn('Could not parse user from localStorage', err);
+    }
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('posted_by', posted_by);
+    formData.append('profile_link', profile_link);
+    formData.append('file', fileInput.files[0]); // multer expects field name 'file'
+
+    // UI: disable button while uploading
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Publishing...';
+    }
+
+    try {
+        const resp = await fetch('/app/uploadpost', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await resp.json().catch(() => null);
+
+        if (resp.ok && result && result.success) {
+            // Close modal, reset form, refresh posts
+            const postModal = document.getElementById('post-modal');
+            if (postModal) {
+                postModal.classList.add('hidden');
+                postModal.classList.remove('flex');
+            }
+            form.reset();
+
+            // Refresh feed
+            if (typeof fetchAllPosts === 'function') fetchAllPosts();
+
+            alert('Post published successfully.');
+        } else {
+            const msg = (result && result.message) ? result.message : `Upload failed (status ${resp.status})`;
+            console.error('Upload error:', result || resp.statusText);
+            alert('Error publishing post: ' + msg);
+        }
+    } catch (error) {
+        console.error('Upload exception:', error);
+        alert('Could not connect to server. Check console for details.');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Publish Post';
+        }
+    }
+}
+
+// Attach submit handler
+const _postForm = document.getElementById('post-form');
+if (_postForm) _postForm.addEventListener('submit', uploadPost);
+
+// ...existing code...
 // --- NAVIGATION & PANEL LOGIC ---
-
 // Centralized function to show a panel and handle specific actions (like fetching posts)
 function showPanel(panelId) {
     const panels = document.querySelectorAll('.panel-section');
