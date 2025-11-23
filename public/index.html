@@ -67,7 +67,7 @@
                     </div>
 
                     <form x-show="isLogin" class="space-y-6" id="login-form">
-                        
+
                         <div>
                             <label for="role" class="block text-sm font-medium text-gray-700">Login Role</label>
                             <div class="mt-1">
@@ -78,7 +78,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">MSU-IIT Email</label>
                             <div class="mt-1">
@@ -94,7 +94,7 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             </div>
                         </div>
-                        
+
                         <div>
                             <button type="submit"
                                 class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
@@ -103,8 +103,10 @@
                         </div>
 
                         <div class="text-center space-x-4">
-                            <button type="button" id="demo-student-btn" class="mt-2 text-sm text-primary underline">Use Student Demo</button>
-                            <button type="button" id="demo-counselor-btn" class="mt-2 text-sm text-secondary underline">Use Counselor Demo</button>
+                            <button type="button" id="demo-student-btn" class="mt-2 text-sm text-primary underline">Use
+                                Student Demo</button>
+                            <button type="button" id="demo-counselor-btn"
+                                class="mt-2 text-sm text-secondary underline">Use Counselor Demo</button>
                         </div>
 
                     </form>
@@ -125,35 +127,65 @@
                                 return;
                             }
 
-                            try {
-                                // Send the selected role along with credentials
-                                const response = await fetch('/app/login', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({ email, password, role })
-                                });
+                            const roleSelected = document.getElementById('role').value;
 
-                                const data = await response.json();
-                                console.log('Login response:', data);
+                            if (roleSelected === 'counselor') {
+                                try{
+                                    // Send the selected role along with credentials
+                                    const response = await fetch('/app/counselor/login', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ email, password })
+                                    });
 
-                                if (response.ok && data.user) {
-                                    localStorage.setItem('user', JSON.stringify(data.user));
+                                    const data = await response.json();
+                                    console.log('Login response:', data);
 
-                                    // Redirect based on the role confirmed by the backend
-                                    if (data.user.role === 'counselor') {
+                                    if (response.ok && data.user) {
+                                        localStorage.setItem('user', JSON.stringify(data.user));
                                         window.location.href = 'dashboard_counselor.html';
                                     } else {
-                                        window.location.href = 'dashboard_student.html';
+                                        alert(data.error || 'Counselor login failed. Please check your credentials and selected role.');
                                     }
-                                } else {
-                                    alert(data.error || 'Login failed. Please check your credentials and selected role.');
+                                } catch (error) {
+                                    console.error('Counselor Login error:', error);
+                                    alert('An error occurred during counselor login. The server might be unreachable.');
                                 }
-                            } catch (error) {
-                                console.error('Login error:', error);
-                                alert('An error occurred during login. The server might be unreachable.');
+
                             }
+                            else if (roleSelected === 'student') {
+                                try {
+                                    // Send the selected role along with credentials
+                                    const response = await fetch('/app/login', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ email, password})
+                                    });
+
+                                    const data = await response.json();
+                                    console.log('Login response:', data);
+
+                                    if (response.ok && data.user) {
+                                        localStorage.setItem('user', JSON.stringify(data.user));
+
+                                            window.location.href = 'dashboard_student.html';
+          
+                                    } else {
+                                        alert(data.error || 'Login failed. Please check your credentials and selected role.');
+                                    }
+                                } catch (error) {
+                                    console.error('Login error:', error);
+                                    alert('An error occurred during login. The server might be unreachable.');
+                                }
+                            }else{
+                                alert('error');
+                            }
+
+
                         }
 
                         // --- Form Submission Listener (Captures role from dropdown) ---

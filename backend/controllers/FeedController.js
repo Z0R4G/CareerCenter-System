@@ -63,11 +63,7 @@ const uploadPost = async (req, res) => {
 const getPosts = async (req, res) => {
     try {
         // 1. Define the SQL query
-        const getPostsql = `
-            SELECT * 
-            FROM feed
-            ORDER BY date_posted Asc
-        `;
+        const getPostsql = `SELECT * FROM feed ORDER BY date_posted DESC`;
         
         // 2. Execute the query 
         const [posts] = await db.execute(getPostsql);

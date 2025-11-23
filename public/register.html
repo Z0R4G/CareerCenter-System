@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,258 +27,255 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-primary mt-4" id="form-title">Create Your CareerConnect+ Student Account</h1>
+                <h1 class="text-3xl font-bold text-primary mt-4" id="form-title">Create Your CareerConnect+ Student
+                    Account</h1>
                 <p class="text-gray-600 mt-2" id="form-subtitle">Connect with the Counselors</p>
             </div>
-            
-            <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-                
+
+            <div
+                class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+
                 <div class="flex justify-center space-x-4 mb-6">
-                    <button id="switch-to-counselor" class="text-secondary hover:text-primary font-medium text-sm border border-secondary hover:border-primary py-2 px-4 rounded-lg transition-colors">
+                    <button id="switch-to-counselor"
+                        class="text-secondary hover:text-primary font-medium text-sm border border-secondary hover:border-primary py-2 px-4 rounded-lg transition-colors">
                         Continue as Counselor
                     </button>
-                    <button id="switch-to-student" class="text-primary hover:text-secondary font-medium text-sm border border-primary hover:border-secondary py-2 px-4 rounded-lg transition-colors hidden">
+                    <button id="switch-to-student"
+                        class="text-primary hover:text-secondary font-medium text-sm border border-primary hover:border-secondary py-2 px-4 rounded-lg transition-colors hidden">
                         Go back to Student Sign-up
                     </button>
                 </div>
-                <form class="space-y-6" id="register-form">
 
-                    <div id="student-fields" class="form-panel">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
-                                <input type="text" name="first_name" id="first_name" 
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-                            </div>
-                            <div>
-                                <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                                <input type="text" name="last_name" id="last_name" 
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-                            </div>
-                        </div>
-
+                <!-- STUDENT FORM -->
+                <form class="space-y-6" id="student-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">MSU-IIT Email</label>
-                            <input type="email" name="email" id="email" required pattern="[a-zA-Z0-9._%+-]+@g\.msuiit\.edu\.ph$"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-                            <p class="mt-1 text-xs text-gray-500">Must end with @g.msuiit.edu.ph</p>
-                        </div>
-
-                        <div>
-                            <label for="id_number" class="block text-sm font-medium text-gray-700">ID Number</label>
-                            <input type="text" name="id_number" id="id_number" required placeholder="e.g., 2023-2700" pattern="\d{4}-\d{4}"
+                            <label for="s_first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" name="first_name" id="s_first_name" required
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
                         </div>
-
                         <div>
-                            <label for="year_program" class="block text-sm font-medium text-gray-700">Year and Program</label>
-                            <div class="flex gap-2">
-                                <select name="year" id="year" required class="mt-1 block w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-                                    <option value="" disabled selected>Select Year</option>
-                                    <option value="1st Year">1st Year</option>
-                                    <option value="2nd Year">2nd Year</option>
-                                    <option value="3rd Year">3rd Year</option>
-                                    <option value="4th Year">4th Year</option>
-                                </select>
-                                <select name="program" id="program" required class="mt-1 block w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-                                    <option value="" disabled selected>Select Program</option>
-                                    <option value="BSIT">BSIT</option>
-                                    <option value="BSIam">BSIam</option>
-                                    <option value="BSCE">BSCE</option>
-                                    <option value="BSIS">BSIS</option>
-                                    <option value="BSEd">BSEd</option>
-                                    <option value="Other">Other</option>
-                                </select>
+                            <label for="s_last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" name="last_name" id="s_last_name" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="s_email" class="block text-sm font-medium text-gray-700">MSU-IIT Email</label>
+                        <input type="email" name="email" id="s_email" required
+                            pattern="[a-zA-Z0-9._%+-]+@g\.msuiit\.edu\.ph$"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                        <p class="mt-1 text-xs text-gray-500">Must end with @g.msuiit.edu.ph</p>
+                    </div>
+
+                    <div>
+                        <label for="s_id_number" class="block text-sm font-medium text-gray-700">ID Number</label>
+                        <input type="text" name="id_number" id="s_id_number" required placeholder="e.g., 2023-2700"
+                            pattern="\d{4}-\d{4}"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Year and Program</label>
+                        <div class="flex gap-2">
+                            <select name="year" id="s_year" required
+                                class="mt-1 block w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                <option value="" disabled selected>Select Year</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                            <select name="program" id="s_program" required
+                                class="mt-1 block w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                <option value="" disabled selected>Select Program</option>
+                                <option value="BSIT">BSIT</option>
+                                <option value="BSIam">BSIam</option>
+                                <option value="BSCE">BSCE</option>
+                                <option value="BSIS">BSIS</option>
+                                <option value="BSEd">BSEd</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Gender</label>
+                        <div
+                            class="mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 flex items-center space-x-6 bg-white">
+                            <div class="flex items-center">
+                                <input type="radio" id="s_gender_male" name="gender" value="male" required
+                                    class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
+                                <label for="s_gender_male" class="ml-2 block text-sm text-gray-700">Male</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="s_gender_female" name="gender" value="female"
+                                    class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
+                                <label for="s_gender_female" class="ml-2 block text-sm text-gray-700">Female</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="s_gender_other" name="gender" value="other"
+                                    class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
+                                <label for="s_gender_other" class="ml-2 block text-sm text-gray-700">LGBTQIA+</label>
                             </div>
                         </div>
                     </div>
-<div id="counselor-fields" class="form-panel hidden">
-    <div>
-        <label for="counselor_email" class="block text-sm font-medium text-gray-700">Counselor Official Email</label>
-        <input type="email" name="counselor_email" id="counselor_email" 
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-        <p class="mt-1 text-xs text-gray-500">Must be an official MSU-IIT email</p>
-    </div>
-    
-    <div>
-        <label for="counselor_office" class="block text-sm font-medium text-gray-700">Office/Department</label>
-        <input type="text" name="counselor_office" id="counselor_office" 
-            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-    </div>
-</div>
-                    <div id="shared-fields">
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                            <input type="password" name="password" id="password" required minlength="8"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-                            <p class="mt-1 text-xs text-gray-500">Minimum 8 characters</p>
-                        </div>
 
-                        <div>
-                            <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                            <input type="password" name="confirm_password" id="confirm_password" required
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Gender</label>
-                            <div class="mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 flex items-center space-x-6 bg-white">
-                                <div class="flex items-center">
-                                    <input type="radio" id="gender-male" name="gender" value="male" required
-                                        class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
-                                    <label for="gender-male" class="ml-2 block text-sm text-gray-700">Male</label>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="radio" id="gender-female" name="gender" value="female"
-                                        class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
-                                    <label for="gender-female" class="ml-2 block text-sm text-gray-700">Female</label>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="radio" id="gender-other" name="gender" value="other"
-                                        class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
-                                    <label for="gender-other" class="ml-2 block text-sm text-gray-700">LGBTQIA+</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <button type="submit" 
-                                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                                Create Account
-                            </button>
-                        </div>
+                    <div>
+                        <label for="s_password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" name="password" id="s_password" required minlength="8"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                        <p class="mt-1 text-xs text-gray-500">Minimum 8 characters</p>
                     </div>
+
+                    <div>
+                        <label for="s_confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input type="password" name="confirm_password" id="s_confirm_password" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            Create Account
+                        </button>
+                    </div>
+
                     <div class="text-center mt-4">
                         <p class="text-sm text-gray-600">
-                            Already have an account? <a href="index.html" class="font-medium text-primary hover:text-opacity-80">Log in</a>
+                            Already have an account? <a href="index.html"
+                                class="font-medium text-primary hover:text-opacity-80">Log in</a>
+                        </p>
+                    </div>
+                </form>
+
+                <!-- COUNSELOR FORM -->
+                <form class="space-y-6 hidden" id="counselor-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="c_first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" name="first_name" id="c_first_name" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label for="c_last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" name="last_name" id="c_last_name" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="c_email" class="block text-sm font-medium text-gray-700">Official Email</label>
+                        <input type="email" name="email" id="c_email" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                        <p class="mt-1 text-xs text-gray-500">Must be an official MSU-IIT email</p>
+                    </div>
+
+                    <div>
+                        <label for="c_office" class="block text-sm font-medium text-gray-700">Office/Department</label>
+                        <input type="text" name="office" id="c_office" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <div>
+                        <label for="c_password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" name="password" id="c_password" required minlength="8"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                        <p class="mt-1 text-xs text-gray-500">Minimum 8 characters</p>
+                    </div>
+
+                    <div>
+                        <label for="c_confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input type="password" name="confirm_password" id="c_confirm_password" required
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            Create Account
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? <a href="index.html"
+                                class="font-medium text-primary hover:text-opacity-80">Log in</a>
                         </p>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    
+
     <script>
-        const studentFields = document.getElementById('student-fields');
-        const counselorFields = document.getElementById('counselor-fields');
         const switchToCounselorBtn = document.getElementById('switch-to-counselor');
         const switchToStudentBtn = document.getElementById('switch-to-student');
         const formTitle = document.getElementById('form-title');
-        
-        let isCounselor = false; // Track the current mode
+        const studentForm = document.getElementById('student-form');
+        const counselorForm = document.getElementById('counselor-form');
 
-const genderRadios = document.querySelectorAll('input[name="gender"]');
-
-function toggleForm(isCounselorMode) {
-    isCounselor = isCounselorMode;
-
-    if (isCounselorMode) {
-        // Switch to Counselor
-        studentFields.classList.add('hidden');
-        counselorFields.classList.remove('hidden');
-        switchToCounselorBtn.classList.add('hidden');
-        switchToStudentBtn.classList.remove('hidden');
-        formTitle.textContent = 'Create Your CareerConnect+ Counselor Account';
-        
-        // Remove 'required' attributes from student fields
-        studentFields.querySelectorAll('input, select').forEach(el => el.removeAttribute('required'));
-        
-        // Add 'required' attributes to counselor fields
-        counselorFields.querySelectorAll('input, select').forEach(el => el.setAttribute('required', 'required'));
-        
-        // ❗ FIX: Remove 'required' from the gender radios ❗
-        genderRadios.forEach(radio => radio.removeAttribute('required'));
-
-    } else {
-        // Switch to Student
-        studentFields.classList.remove('hidden');
-        counselorFields.classList.add('hidden');
-        switchToCounselorBtn.classList.remove('hidden');
-        switchToStudentBtn.classList.add('hidden');
-        formTitle.textContent = 'Create Your CareerConnect+ Student Account';
-        
-        // Add 'required' attributes back to student fields
-        studentFields.querySelectorAll('input, select').forEach(el => el.setAttribute('required', 'required'));
-        
-        // Remove 'required' attributes from counselor fields
-        counselorFields.querySelectorAll('input, select').forEach(el => el.removeAttribute('required'));
-        
-        // ❗ FIX: Add 'required' back to the first gender radio button ❗
-        if (genderRadios.length > 0) {
-             genderRadios[0].setAttribute('required', 'required');
+        function switchToStudent() {
+            studentForm.classList.remove('hidden');
+            counselorForm.classList.add('hidden');
+            switchToCounselorBtn.classList.remove('hidden');
+            switchToStudentBtn.classList.add('hidden');
+            formTitle.textContent = 'Create Your CareerConnect+ Student Account';
         }
-    }
-}
 
-switchToCounselorBtn.addEventListener('click', () => toggleForm(true));
-switchToStudentBtn.addEventListener('click', () => toggleForm(false));
+        function switchToCounselor() {
+            studentForm.classList.add('hidden');
+            counselorForm.classList.remove('hidden');
+            switchToCounselorBtn.classList.add('hidden');
+            switchToStudentBtn.classList.remove('hidden');
+            formTitle.textContent = 'Create Your CareerConnect+ Counselor Account';
+        }
 
-        // Original Submission Logic (updated to handle both roles)
-        document.getElementById('register-form').addEventListener('submit', async function(e) {
+        switchToCounselorBtn.addEventListener('click', switchToCounselor);
+        switchToStudentBtn.addEventListener('click', switchToStudent);
+
+        // STUDENT FORM SUBMISSION
+        studentForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            
-            const password = document.getElementById('password').value;
-            const confirm_password = document.getElementById('confirm_password').value;
 
-            // Basic shared validation
+            const password = document.getElementById('s_password').value;
+            const confirm_password = document.getElementById('s_confirm_password').value;
+
             if (password !== confirm_password) {
                 alert('Passwords do not match!');
                 return;
             }
-            
-            // Collect data based on role
-            let formData = {
-                password,
-                gender: document.querySelector('input[name="gender"]:checked')?.value,
-                role: isCounselor ? 'counselor' : 'student' // Crucial role field
+
+            const formData = {
+                email: document.getElementById('s_email').value.trim(),
+                first_name: document.getElementById('s_first_name').value.trim(),
+                last_name: document.getElementById('s_last_name').value.trim(),
+                password: password,
+                id_number: document.getElementById('s_id_number').value.trim(),
+                year: document.getElementById('s_year').value,
+                program: document.getElementById('s_program').value,
+                gender: document.querySelector('input[name="gender"]:checked')?.value
             };
 
-            if (isCounselor) {
-                formData.email = document.getElementById('counselor_email').value.trim();
-                formData.office = document.getElementById('counselor_office').value.trim();
-                // Add other counselor-specific fields as needed
-            } else {
-                formData.email = document.getElementById('email').value.trim();
-                formData.first_name = document.getElementById('first_name')?.value.trim() || '';
-                formData.last_name = document.getElementById('last_name')?.value.trim() || '';
-                formData.id_number = document.getElementById('id_number').value.trim();
-                formData.year = document.getElementById('year').value;
-                formData.program = document.getElementById('program').value;
-            }
-            
-            // Re-validate all required fields for the active form
-            // (The browser usually handles this on submit, but we do it here since we manually toggle 'required')
-            let formIsValid = true;
-            document.querySelectorAll('#register-form input, #register-form select').forEach(el => {
-                if (el.hasAttribute('required') && !el.value) {
-                    formIsValid = false;
-                }
-            });
+            console.log('Student registration data:', formData);
 
-            if (!formIsValid) {
-                 // The alert will be triggered by the missing field itself on most browsers, 
-                 // but this is a fallback for data-level checks.
-                 alert('Please fill in all required fields.');
-                 return;
-            }
-
-
-            // --- FETCH API CALL ---
             try {
                 const response = await fetch('/app/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData) // Send the role-specific data
+                    body: JSON.stringify(formData)
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok) {
                     alert('Registration successful! You can now log in.');
                     window.location.href = 'index.html';
@@ -285,16 +283,62 @@ switchToStudentBtn.addEventListener('click', () => toggleForm(false));
                     alert(data.error || 'Registration failed. Please try again.');
                 }
             } catch (error) {
-                console.error('Registration error:', error);
+                console.error('Student registration error:', error);
+                alert('An error occurred during registration. Please try again.');
+            }
+        });
+
+        // COUNSELOR FORM SUBMISSION
+        counselorForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const password = document.getElementById('c_password').value;
+            const confirm_password = document.getElementById('c_confirm_password').value;
+
+            if (password !== confirm_password) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            const formData = {
+                email: document.getElementById('c_email').value.trim(),
+                first_name: document.getElementById('c_first_name').value.trim(),
+                last_name: document.getElementById('c_last_name').value.trim(),
+                password: password,
+                office: document.getElementById('c_office').value.trim()
+            };
+
+            console.log('Counselor registration data:', formData);
+
+            try {
+                const response = await fetch('/app/counselor/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Registration successful! You can now log in.');
+                    window.location.href = 'index.html';
+                } else {
+                    alert(data.error || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Counselor registration error:', error);
                 alert('An error occurred during registration. Please try again.');
             }
         });
     </script>
-    
+
     <footer class="bg-white py-6">
         <div class="max-w-6xl mx-auto px-4 text-center text-gray-500">
             <p>© 2025 MICC - Exclusive system for MSU-IIT's counselors and students.</p>
         </div>
     </footer>
 </body>
+
 </html>
