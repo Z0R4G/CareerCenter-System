@@ -29,24 +29,24 @@
 </head>
 
 <body class="bg-gray-100 font-sans">
-    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-primary mt-4" id="form-title">Create Your CareerConnect+ Student
+            <div class="text-center mb-6 sm:mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-primary mt-2 sm:mt-4" id="form-title">Create Your CareerConnect+ Student
                     Account</h1>
-                <p class="text-gray-600 mt-2" id="form-subtitle">Connect with the Counselors</p>
+                <p class="text-sm sm:text-base text-gray-600 mt-2" id="form-subtitle">Connect with the Counselors</p>
             </div>
 
             <div
-                class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                class="bg-white py-6 sm:py-8 px-4 sm:px-6 shadow rounded-lg lg:px-10 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
 
-                <div class="flex justify-center space-x-4 mb-6">
+                <div class="flex flex-col sm:flex-row justify-center gap-3 sm:space-x-4 mb-4 sm:mb-6">
                     <button id="switch-to-counselor"
-                        class="text-secondary hover:text-primary font-medium text-sm border border-secondary hover:border-primary py-2 px-4 rounded-lg transition-colors">
+                        class="text-secondary hover:text-primary font-medium text-sm border border-secondary hover:border-primary py-2 px-4 rounded-lg transition-colors w-full sm:w-auto">
                         Continue as Counselor
                     </button>
                     <button id="switch-to-student"
-                        class="text-primary hover:text-secondary font-medium text-sm border border-primary hover:border-secondary py-2 px-4 rounded-lg transition-colors hidden">
+                        class="text-primary hover:text-secondary font-medium text-sm border border-primary hover:border-secondary py-2 px-4 rounded-lg transition-colors hidden w-full sm:w-auto">
                         Go back to Student Sign-up
                     </button>
                 </div>
@@ -83,9 +83,9 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Year and Program</label>
-                        <div class="flex gap-2">
+                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-2">
                             <select name="year" id="s_year" required
-                                class="mt-1 block w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                class="mt-1 block w-full sm:w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
                                 <option value="" disabled selected>Select Year</option>
                                 <option value="1st Year">1st Year</option>
                                 <option value="2nd Year">2nd Year</option>
@@ -93,7 +93,7 @@
                                 <option value="4th Year">4th Year</option>
                             </select>
                             <select name="program" id="s_program" required
-                                class="mt-1 block w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                class="mt-1 block w-full sm:w-1/2 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
                                 <option value="" disabled selected>Select Program</option>
                                 <option value="BSIT">BSIT</option>
                                 <option value="BSIam">BSIam</option>
@@ -108,7 +108,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Gender</label>
                         <div
-                            class="mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 flex items-center space-x-6 bg-white">
+                            class="mt-1 w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:space-x-6 bg-white">
                             <div class="flex items-center">
                                 <input type="radio" id="s_gender_male" name="gender" value="male" required
                                     class="focus:ring-primary h-4 w-4 text-primary border-gray-300">
