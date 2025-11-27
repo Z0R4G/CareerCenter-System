@@ -8,9 +8,13 @@ class AppointmentManager {
         this.modal = document.getElementById('appointment-modal');
         this.appointmentForm = document.getElementById('appointment-form');
         this.modalCounselorName = document.getElementById('modal-counselor-name');
-            this.user = null;
+        this.user = null;
         this.userType = 'student';
         this._handlersAttached = false;
+        this.resumeDropzone = document.getElementById('resume-dropzone');
+        this.resumeFileInput = document.getElementById('resume-upload-input');
+        this._resumeHandlersAttached = false;
+        this.resumeUploading = false;
     }
 
     /**
@@ -38,6 +42,140 @@ class AppointmentManager {
         // Populate UI immediately
         this.loadAppointments();
         this.loadResumes();
+        this.attachResumeUploadHandler();
+    }
+
+    /**
+     * Resolve stored identifier regardless of property naming.
+     */
+    getUserId() {
+        if (!this.user) return null;
+        return this.user.id
+            || this.user.user_id
+            || this.user.student_id
+            || this.user.ID_number
+            || this.user.id_number
+            || this.user.ID
+            || this.user.studentId
+            || this.user.userId
+            || null;
+    }
+
+    /**
+     * Attach resume upload handlers to dropzone and hidden input
+     */
+    attachResumeUploadHandler() {
+        if (this._resumeHandlersAttached) return;
+
+        const dropzone = this.resumeDropzone || document.getElementById('resume-dropzone');
+        const fileInput = this.resumeFileInput || document.getElementById('resume-upload-input');
+
+        if (!dropzone || !fileInput) return;
+
+        const resetVisual = () => dropzone.classList.remove('border-primary', 'bg-primary/5');
+        const setHighlight = () => dropzone.classList.add('border-primary', 'bg-primary/5');
+
+        dropzone.addEventListener('click', () => fileInput.click());
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            setHighlight();
+        });
+        dropzone.addEventListener('dragleave', () => resetVisual());
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            resetVisual();
+            const files = e.dataTransfer && e.dataTransfer.files;
+            const file = files && files[0];
+            this.handleResumeFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target && e.target.files;
+            const file = files && files[0];
+            this.handleResumeFile(file);
+            e.target.value = '';
+        });
+
+        this.resumeDropzone = dropzone;
+        this.resumeFileInput = fileInput;
+        this._resumeHandlersAttached = true;
+    }
+
+    /**
+     * Validate and process selected resume file
+     * @param {File|null} file
+     */
+    handleResumeFile(file) {
+        if (!file || this.resumeUploading) return;
+
+        const allowedExtensions = ['pdf', 'doc', 'docx'];
+        const extension = file.name.split('.').pop().toLowerCase();
+
+        if (!allowedExtensions.includes(extension)) {
+            alert('Please upload a PDF or DOC/DOCX file.');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Please upload a file smaller than 5 MB.');
+            return;
+        }
+
+        this.uploadResume(file);
+    }
+
+    /**
+     * Update dropzone status while uploading
+     * @param {boolean} state
+     */
+    setResumeUploading(state) {
+        this.resumeUploading = state;
+        if (!this.resumeDropzone) return;
+
+        const message = this.resumeDropzone.querySelector('p');
+        if (state) {
+            this.resumeDropzone.classList.add('opacity-60', 'pointer-events-none');
+            if (message) message.textContent = 'Uploading resume...';
+        } else {
+            this.resumeDropzone.classList.remove('opacity-60', 'pointer-events-none');
+            if (message) message.textContent = 'Drag and drop or click to browse (PDF, DOCX)';
+        }
+    }
+
+    /**
+     * Upload resume to backend
+     * @param {File} file
+     */
+    async uploadResume(file) {
+        const userId = this.getUserId();
+        if (!userId) {
+            alert('Please log in before uploading a resume.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            this.setResumeUploading(true);
+            const resp = await fetch(`/app/uploadresume/${encodeURIComponent(userId)}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!resp.ok) {
+                const msg = await resp.text().catch(() => 'Resume upload failed.');
+                throw new Error(msg || 'Resume upload failed.');
+            }
+
+            alert('Resume uploaded successfully.');
+            this.loadResumes();
+        } catch (err) {
+            console.error('uploadResume error', err);
+            alert('Unable to upload resume right now. Please try again.');
+        } finally {
+            this.setResumeUploading(false);
+        }
     }
 
     /**
@@ -111,7 +249,8 @@ class AppointmentManager {
             }
 
             // If backend endpoints exist, use them. Otherwise, show default message.
-            if (!this.user || !this.user.id) {
+            const userId = this.getUserId();
+            if (!userId) {
                 container.innerHTML = `
                     <div class="bg-gray-50 p-4 border border-gray-200 rounded-lg text-center">
                         <p class="text-gray-500 italic">No appointment data available. Please log in.</p>
@@ -121,8 +260,8 @@ class AppointmentManager {
             }
 
             const endpoint = this.userType === 'student'
-                ? `/api/appointments/student/${this.user.id}`
-                : `/api/appointments/counselor/${this.user.id}`;
+                ? `/api/appointments/student/${userId}`
+                : `/api/appointments/counselor/${userId}`;
 
             const resp = await fetch(endpoint).catch(() => null);
             if (!resp || !resp.ok) {
@@ -212,13 +351,14 @@ class AppointmentManager {
                 panel.appendChild(container);
             }
 
-            if (!this.user || !this.user.id) {
+            const userId = this.getUserId();
+            if (!userId && this.userType === 'student') {
                 container.innerHTML = `<p class="text-gray-500 italic">No resume data available. Please log in.</p>`;
                 return;
             }
 
             const endpoint = this.userType === 'student'
-                ? `/api/resumes/student/${this.user.id}`
+                ? `/app/getmyresume/${encodeURIComponent(userId)}`
                 : `/api/resumes/queue`;
 
             const resp = await fetch(endpoint).catch(() => null);
@@ -228,7 +368,9 @@ class AppointmentManager {
             }
 
             const data = await resp.json();
-            const resumes = data && data.resumes ? data.resumes : [];
+            const resumes = Array.isArray(data)
+                ? data
+                : (data && (data.resume || data.resumes)) || [];
             this.renderResumes(resumes);
 
         } catch (err) {
@@ -245,15 +387,26 @@ class AppointmentManager {
             return;
         }
 
-        container.innerHTML = resumes.map(resume => `
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-100 transition-colors">
-                <div>
-                    <p class="font-semibold text-gray-800">${resume.student_name || 'Student'} (${resume.program || ''})</p>
-                    <p class="text-sm text-gray-500">Submitted: ${resume.submitted_date || ''} | Status: ${resume.status || ''}</p>
+        container.innerHTML = resumes.map(resume => {
+            const submitted = resume.created_at || resume.submitted_date || '';
+            const status = resume.status || 'pending';
+            const fileUrl = resume.resume_link || resume.document_link || resume.file_path || '#';
+            const title = resume.filename || `Resume ${resume.resume_id || ''}`;
+            const counselorNote = resume.councilor_id
+                ? `Assigned counselor: ${resume.councilor_id}`
+                : 'Waiting for counselor assignment';
+
+            return `
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 flex justify-between items-center gap-4 hover:bg-gray-100 transition-colors">
+                    <div>
+                        <p class="font-semibold text-gray-800">${title}</p>
+                        <p class="text-sm text-gray-500">Submitted: ${submitted} | Status: ${status}</p>
+                        <p class="text-xs text-gray-400">${counselorNote}</p>
+                    </div>
+                    <button onclick="window.open('${fileUrl}','_blank')" class="bg-primary text-white py-1.5 px-4 rounded-full text-sm">Open File</button>
                 </div>
-                <button onclick="window.open('${resume.file_path || '#'}','_blank')" class="bg-primary text-white py-1.5 px-4 rounded-full text-sm">Review File</button>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 }
 

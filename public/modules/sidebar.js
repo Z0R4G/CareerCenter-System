@@ -86,6 +86,8 @@ class SidebarManager {
     /**
      * Remove overlay
      */
+
+    
     removeOverlay() {
         if (this.overlay) {
             this.overlay.remove();
@@ -109,7 +111,7 @@ class SidebarManager {
             this.mobileMenuBtn.style.display = 'none';
         }
     }
-
+    
     /**
      * Close mobile drawer
      */
