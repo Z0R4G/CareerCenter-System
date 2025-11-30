@@ -6,6 +6,7 @@ const signupLoginRoutes = require('./routes/signupLogin');
 const editProfileRoutes = require('./routes/editProfile');
 const FeedRoutes = require('./routes/FeedRoutes');
 const ResumeRoutes = require('./routes/ResumeChecker');
+const messageRoutes = require('./routes/messageRoutes');
 //middlewares
 const app = express();
 app.use(express.json()); 
@@ -20,6 +21,7 @@ app.use('/app',signupLoginRoutes);
 app.use('/app',editProfileRoutes);
 app.use('/app',FeedRoutes);
 app.use('/app',ResumeRoutes);
+app.use('/app',messageRoutes);
 
 
 
