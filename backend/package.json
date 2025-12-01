@@ -8,16 +8,16 @@
     "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Pulido F., Quinit M.A., Sayson J.",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
+    "express": "^4.21.2",
     "imagekit": "^6.0.0",
     "multer": "^2.0.2",
     "mysql2": "^3.15.2",
-    "nodemon": "^3.1.10",
+    "nodemon": "^3.1.11",
     "sitemap-generator": "^7.5.2"
   }
 }
