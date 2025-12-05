@@ -1,3 +1,5 @@
+//TODO: COUNSELOR SIGN UP HAS BUGS
+
 // controllers/uploadController.js
 const imagekit = require("../configs/imagekit");
 const db = require('../configs/dbConnection');
